@@ -1,15 +1,32 @@
-from festival_lib.db import Session, engine
-from festival_lib.model import Base, Festival, Location
-from festival_lib import gui_data
-
 import tkinter as tk
+import webbrowser
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import folium
-import webbrowser
+
+from festival_lib.db import Base
+from festival_lib.model import Festival, Location, Employee
+
+from festival_lib import gui_data
 
 
 # ==================================================
-# 🔵 BAZA DANYCH
+# 🔵 BAZA
+# ==================================================
+
+engine = create_engine(
+    "sqlite:///film_festival.db"
+)
+
+Session = sessionmaker(
+    bind=engine
+)
+
+
+# ==================================================
+# 🔵 CREATE DB
 # ==================================================
 
 def create_db():
@@ -18,32 +35,83 @@ def create_db():
 
 
 # ==================================================
-# 🔵 DANE STARTOWE
+# 🔵 TEST DATA
 # ==================================================
 
 def add_test_data():
 
     session = Session()
 
-    festivals = session.query(Festival).all()
+    if session.query(Festival).count() == 0:
 
-    if len(festivals) == 0:
-
-        fest1 = Festival(
+        festival_1 = Festival(
             name="Warszawski Festiwal Filmowy",
             city="Warszawa",
-            latitude=52.23,
-            longitude=21.01
+            latitude=52.2297,
+            longitude=21.0122
         )
 
-        fest2 = Festival(
+        festival_2 = Festival(
             name="Krakowski Festiwal Filmowy",
             city="Kraków",
-            latitude=50.06,
-            longitude=19.94
+            latitude=50.0647,
+            longitude=19.9450
         )
 
-        session.add_all([fest1, fest2])
+        session.add_all([
+            festival_1,
+            festival_2
+        ])
+
+        session.commit()
+
+    if session.query(Location).count() == 0:
+
+        location_1 = Location(
+            name="Kino Luna",
+            city="Warszawa",
+            latitude=52.2200,
+            longitude=21.0000,
+            festival_id=1
+        )
+
+        location_2 = Location(
+            name="Kino Pod Baranami",
+            city="Kraków",
+            latitude=50.0610,
+            longitude=19.9360,
+            festival_id=2
+        )
+
+        session.add_all([
+            location_1,
+            location_2
+        ])
+
+        session.commit()
+
+    if session.query(Employee).count() == 0:
+
+        employee_1 = Employee(
+            name="Jan Kowalski",
+            role="Koordynator",
+            latitude=52.22,
+            longitude=21.00,
+            location_id=1
+        )
+
+        employee_2 = Employee(
+            name="Anna Nowak",
+            role="Technik",
+            latitude=50.06,
+            longitude=19.93,
+            location_id=2
+        )
+
+        session.add_all([
+            employee_1,
+            employee_2
+        ])
 
         session.commit()
 
@@ -51,7 +119,7 @@ def add_test_data():
 
 
 # ==================================================
-# 🔵 ODCZYT FESTIWALI
+# 🔵 FESTIWALE
 # ==================================================
 
 def read_festival_data():
@@ -65,11 +133,12 @@ def read_festival_data():
     return festivals
 
 
-# ==================================================
-# 🔵 DODAWANIE FESTIWALU
-# ==================================================
-
-def add_festival(name, city, latitude, longitude):
+def add_festival(
+        name,
+        city,
+        latitude,
+        longitude
+):
 
     session = Session()
 
@@ -86,10 +155,6 @@ def add_festival(name, city, latitude, longitude):
 
     session.close()
 
-
-# ==================================================
-# 🔵 USUWANIE FESTIWALU
-# ==================================================
 
 def delete_festival(festival_id):
 
@@ -108,10 +173,6 @@ def delete_festival(festival_id):
     session.close()
 
 
-# ==================================================
-# 🔵 AKTUALIZACJA FESTIWALU
-# ==================================================
-
 def update_festival(
         festival_id,
         name,
@@ -129,11 +190,8 @@ def update_festival(
     if festival:
 
         festival.name = name
-
         festival.city = city
-
         festival.latitude = latitude
-
         festival.longitude = longitude
 
         session.commit()
@@ -142,7 +200,7 @@ def update_festival(
 
 
 # ==================================================
-# 🔵 ODŚWIEŻANIE LISTY
+# 🔵 GUI FESTIWALE
 # ==================================================
 
 def refresh_festival_list():
@@ -161,10 +219,6 @@ def refresh_festival_list():
             f"{festival.id} | {festival.name} | {festival.city}"
         )
 
-
-# ==================================================
-# 🔵 DODAWANIE FESTIWALU GUI
-# ==================================================
 
 def add_festival_gui():
 
@@ -189,10 +243,8 @@ def add_festival_gui():
 
     refresh_festival_list()
 
+    refresh_system_status()
 
-# ==================================================
-# 🔵 USUWANIE FESTIWALU GUI
-# ==================================================
 
 def delete_festival_gui():
 
@@ -210,10 +262,8 @@ def delete_festival_gui():
 
         refresh_festival_list()
 
+        refresh_system_status()
 
-# ==================================================
-# 🔵 AKTUALIZACJA FESTIWALU GUI
-# ==================================================
 
 def update_festival_gui():
 
@@ -244,10 +294,6 @@ def update_festival_gui():
     refresh_festival_list()
 
 
-# ==================================================
-# 🔵 ŁADOWANIE FESTIWALU
-# ==================================================
-
 def load_selected_festival(event):
 
     selected = gui_data.listbox_lista_festiwali.curselection()
@@ -260,44 +306,41 @@ def load_selected_festival(event):
             festival_text.split("|")[0]
         )
 
-        festivals = read_festival_data()
+        session = Session()
 
-        for festival in festivals:
+        festival = session.query(Festival).filter(
+            Festival.id == festival_id
+        ).first()
 
-            if festival.id == festival_id:
+        session.close()
 
-                gui_data.entry_id_update.delete(0, tk.END)
-                gui_data.entry_id_update.insert(0, festival.id)
+        gui_data.label_szczegoly.config(
+            text=
+            f"ID: {festival.id}\n\n"
+            f"Nazwa: {festival.name}\n\n"
+            f"Miasto: {festival.city}\n\n"
+            f"Szerokość: {festival.latitude}\n\n"
+            f"Długość: {festival.longitude}"
+        )
 
-                gui_data.entry_nazwa_update.delete(0, tk.END)
-                gui_data.entry_nazwa_update.insert(0, festival.name)
+        gui_data.entry_id_update.delete(0, tk.END)
+        gui_data.entry_id_update.insert(0, festival.id)
 
-                gui_data.entry_miasto_update.delete(0, tk.END)
-                gui_data.entry_miasto_update.insert(0, festival.city)
+        gui_data.entry_nazwa_update.delete(0, tk.END)
+        gui_data.entry_nazwa_update.insert(0, festival.name)
 
-                gui_data.entry_szerokosc_update.delete(0, tk.END)
-                gui_data.entry_szerokosc_update.insert(
-                    0,
-                    festival.latitude
-                )
+        gui_data.entry_miasto_update.delete(0, tk.END)
+        gui_data.entry_miasto_update.insert(0, festival.city)
 
-                gui_data.entry_dlugosc_update.delete(0, tk.END)
-                gui_data.entry_dlugosc_update.insert(
-                    0,
-                    festival.longitude
-                )
+        gui_data.entry_szerokosc_update.delete(0, tk.END)
+        gui_data.entry_szerokosc_update.insert(0, festival.latitude)
 
-                gui_data.label_szczegoly.config(
-                    text=
-                    f"ID: {festival.id}\n"
-                    f"Nazwa: {festival.name}\n"
-                    f"Miasto: {festival.city}\n"
-                    f"Szerokość: {festival.latitude}\n"
-                    f"Długość: {festival.longitude}"
-                )
+        gui_data.entry_dlugosc_update.delete(0, tk.END)
+        gui_data.entry_dlugosc_update.insert(0, festival.longitude)
+
 
 # ==================================================
-# 🔵 ODCZYT KIN
+# 🔵 KINA
 # ==================================================
 
 def read_location_data():
@@ -310,93 +353,6 @@ def read_location_data():
 
     return locations
 
-
-# ==================================================
-# 🔵 DODAWANIE KINA
-# ==================================================
-
-def add_location(
-        name,
-        city,
-        latitude,
-        longitude,
-        festival_id
-):
-
-    session = Session()
-
-    location = Location(
-        name=name,
-        city=city,
-        latitude=latitude,
-        longitude=longitude,
-        festival_id=festival_id
-    )
-
-    session.add(location)
-
-    session.commit()
-
-    session.close()
-
-
-# ==================================================
-# 🔵 USUWANIE KINA
-# ==================================================
-
-def delete_location(location_id):
-
-    session = Session()
-
-    location = session.query(Location).filter(
-        Location.id == location_id
-    ).first()
-
-    if location:
-
-        session.delete(location)
-
-        session.commit()
-
-    session.close()
-
-
-# ==================================================
-# 🔵 AKTUALIZACJA KINA
-# ==================================================
-
-def update_location(
-        location_id,
-        name,
-        city,
-        latitude,
-        longitude
-):
-
-    session = Session()
-
-    location = session.query(Location).filter(
-        Location.id == location_id
-    ).first()
-
-    if location:
-
-        location.name = name
-
-        location.city = city
-
-        location.latitude = latitude
-
-        location.longitude = longitude
-
-        session.commit()
-
-    session.close()
-
-
-# ==================================================
-# 🔵 ODŚWIEŻANIE LISTY KIN
-# ==================================================
 
 def refresh_location_list():
 
@@ -415,43 +371,6 @@ def refresh_location_list():
         )
 
 
-# ==================================================
-# 🔵 DODAWANIE KINA GUI
-# ==================================================
-
-def add_location_gui():
-
-    name = gui_data.entry_nazwa_kina.get()
-
-    city = gui_data.entry_miasto_kina.get()
-
-    latitude = float(
-        gui_data.entry_szerokosc_kina.get()
-    )
-
-    longitude = float(
-        gui_data.entry_dlugosc_kina.get()
-    )
-
-    festival_id = int(
-        gui_data.entry_festival_id_kina.get()
-    )
-
-    add_location(
-        name,
-        city,
-        latitude,
-        longitude,
-        festival_id
-    )
-
-    refresh_location_list()
-
-
-# ==================================================
-# 🔵 USUWANIE KINA GUI
-# ==================================================
-
 def delete_location_gui():
 
     selected = gui_data.listbox_lista_kin.curselection()
@@ -464,9 +383,147 @@ def delete_location_gui():
             location_text.split("|")[0]
         )
 
-        delete_location(location_id)
+        session = Session()
+
+        location = session.query(Location).filter(
+            Location.id == location_id
+        ).first()
+
+        if location:
+
+            session.delete(location)
+
+            session.commit()
+
+        session.close()
 
         refresh_location_list()
+
+        refresh_system_status()
+
+
+# ==================================================
+# 🔵 PRACOWNICY
+# ==================================================
+
+def read_employee_data():
+
+    session = Session()
+
+    employees = session.query(Employee).all()
+
+    session.close()
+
+    return employees
+
+
+def add_employee(
+        name,
+        role,
+        latitude,
+        longitude,
+        location_id
+):
+
+    session = Session()
+
+    employee = Employee(
+        name=name,
+        role=role,
+        latitude=latitude,
+        longitude=longitude,
+        location_id=location_id
+    )
+
+    session.add(employee)
+
+    session.commit()
+
+    session.close()
+
+
+def delete_employee(employee_id):
+
+    session = Session()
+
+    employee = session.query(Employee).filter(
+        Employee.id == employee_id
+    ).first()
+
+    if employee:
+
+        session.delete(employee)
+
+        session.commit()
+
+    session.close()
+
+
+def refresh_employee_list():
+
+    gui_data.listbox_pracownicy.delete(
+        0,
+        tk.END
+    )
+
+    employees = read_employee_data()
+
+    for employee in employees:
+
+        gui_data.listbox_pracownicy.insert(
+            tk.END,
+            f"{employee.id} | {employee.name} | {employee.role}"
+        )
+
+
+def add_employee_gui():
+
+    name = gui_data.entry_imie_pracownika.get()
+
+    role = gui_data.entry_rola_pracownika.get()
+
+    latitude = float(
+        gui_data.entry_szerokosc_pracownika.get()
+    )
+
+    longitude = float(
+        gui_data.entry_dlugosc_pracownika.get()
+    )
+
+    location_id = int(
+        gui_data.entry_location_id_pracownika.get()
+    )
+
+    add_employee(
+        name,
+        role,
+        latitude,
+        longitude,
+        location_id
+    )
+
+    refresh_employee_list()
+
+    refresh_system_status()
+
+
+def delete_employee_gui():
+
+    selected = gui_data.listbox_pracownicy.curselection()
+
+    if selected:
+
+        employee_text = gui_data.listbox_pracownicy.get(selected)
+
+        employee_id = int(
+            employee_text.split("|")[0]
+        )
+
+        delete_employee(employee_id)
+
+        refresh_employee_list()
+
+        refresh_system_status()
 
 
 # ==================================================
@@ -475,9 +532,7 @@ def delete_location_gui():
 
 def show_map():
 
-    session = Session()
-
-    festivals = session.query(Festival).all()
+    festivals = read_festival_data()
 
     mapa = folium.Map(
         location=[52.0, 19.0],
@@ -487,21 +542,35 @@ def show_map():
     for festival in festivals:
 
         folium.Marker(
-            location=[
-                festival.latitude,
-                festival.longitude
-            ],
-
-            popup=f"{festival.name} ({festival.city})",
-
-            icon=folium.Icon(color="red")
-
+            [festival.latitude, festival.longitude],
+            popup=f"{festival.name} | {festival.city}"
         ).add_to(mapa)
-
-
 
     mapa.save("mapa.html")
 
     webbrowser.open("mapa.html")
 
+
+# ==================================================
+# 🔵 STATUS SYSTEMU
+# ==================================================
+
+def refresh_system_status():
+
+    session = Session()
+
+    festival_count = session.query(Festival).count()
+
+    location_count = session.query(Location).count()
+
+    employee_count = session.query(Employee).count()
+
     session.close()
+
+    gui_data.label_status.config(
+        text=
+        f"Liczba festiwali: {festival_count}\n\n"
+        f"Liczba kin: {location_count}\n\n"
+        f"Liczba pracowników: {employee_count}\n\n"
+        f"Status bazy danych: ONLINE"
+    )

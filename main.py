@@ -22,18 +22,9 @@ okno = tk.Tk()
 
 okno.title("Film Festival System")
 
-okno.geometry("1700x900")
+okno.geometry("1800x950")
 
 okno.state("zoomed")
-
-
-# ==================================================
-# 🔵 GRID
-# ==================================================
-
-okno.columnconfigure(0, weight=1)
-okno.columnconfigure(1, weight=2)
-okno.columnconfigure(2, weight=1)
 
 
 # ==================================================
@@ -95,7 +86,7 @@ gui_data.listbox_lista_festiwali = listbox_lista_festiwali
 
 button_odswiez = tk.Button(
     ramka_lista_festiwali,
-    text="⟳  Odśwież listę",
+    text="⟳ Odśwież listę",
     width=32,
     bg=blue,
     fg="white",
@@ -112,7 +103,7 @@ button_odswiez.pack(
 
 button_usun = tk.Button(
     ramka_lista_festiwali,
-    text="🗑  Usuń festiwal",
+    text="🗑 Usuń festiwal",
     width=32,
     bg=red,
     fg="white",
@@ -129,7 +120,7 @@ button_usun.pack(
 
 button_mapa = tk.Button(
     ramka_lista_festiwali,
-    text="📍  Otwórz mapę",
+    text="📍 Otwórz mapę",
     width=32,
     bg=green,
     fg="white",
@@ -175,7 +166,7 @@ gui_data.listbox_lista_kin = listbox_lista_kin
 
 button_odswiez_kina = tk.Button(
     ramka_kina,
-    text="⟳  Odśwież kina",
+    text="⟳ Odśwież kina",
     width=32,
     bg=blue,
     fg="white",
@@ -192,7 +183,7 @@ button_odswiez_kina.pack(
 
 button_usun_kino = tk.Button(
     ramka_kina,
-    text="🗑  Usuń kino",
+    text="🗑 Usuń kino",
     width=32,
     bg=orange,
     fg="white",
@@ -233,15 +224,18 @@ listbox_pracownicy = tk.Listbox(
 
 listbox_pracownicy.pack()
 
+gui_data.listbox_pracownicy = listbox_pracownicy
+
 
 button_odswiez_pracownikow = tk.Button(
     ramka_pracownicy,
-    text="⟳  Odśwież pracowników",
+    text="⟳ Odśwież pracowników",
     width=32,
     bg=blue,
     fg="white",
     font=button_font,
-    relief="flat"
+    relief="flat",
+    command=refresh_employee_list
 )
 
 button_odswiez_pracownikow.pack(
@@ -252,12 +246,13 @@ button_odswiez_pracownikow.pack(
 
 button_dodaj_pracownika = tk.Button(
     ramka_pracownicy,
-    text="➕  Dodaj pracownika",
+    text="➕ Dodaj pracownika",
     width=32,
     bg=green,
     fg="white",
     font=button_font,
-    relief="flat"
+    relief="flat",
+    command=add_employee_gui
 )
 
 button_dodaj_pracownika.pack(
@@ -268,12 +263,13 @@ button_dodaj_pracownika.pack(
 
 button_usun_pracownika = tk.Button(
     ramka_pracownicy,
-    text="🗑  Usuń pracownika",
+    text="🗑 Usuń pracownika",
     width=32,
     bg=orange,
     fg="white",
     font=button_font,
-    relief="flat"
+    relief="flat",
+    command=delete_employee_gui
 )
 
 button_usun_pracownika.pack(
@@ -317,11 +313,7 @@ ramka_dodaj.pack(
 tk.Label(
     ramka_dodaj,
     text="Nazwa festiwalu:"
-).grid(
-    row=0,
-    column=0,
-    sticky="w"
-)
+).grid(row=0, column=0, sticky="w")
 
 entry_nazwa = tk.Entry(
     ramka_dodaj,
@@ -341,11 +333,7 @@ gui_data.entry_nazwa = entry_nazwa
 tk.Label(
     ramka_dodaj,
     text="Miasto:"
-).grid(
-    row=2,
-    column=0,
-    sticky="w"
-)
+).grid(row=2, column=0, sticky="w")
 
 entry_miasto = tk.Entry(
     ramka_dodaj,
@@ -365,11 +353,7 @@ gui_data.entry_miasto = entry_miasto
 tk.Label(
     ramka_dodaj,
     text="Szerokość geograficzna:"
-).grid(
-    row=4,
-    column=0,
-    sticky="w"
-)
+).grid(row=4, column=0, sticky="w")
 
 entry_szerokosc = tk.Entry(
     ramka_dodaj,
@@ -389,11 +373,7 @@ gui_data.entry_szerokosc = entry_szerokosc
 tk.Label(
     ramka_dodaj,
     text="Długość geograficzna:"
-).grid(
-    row=6,
-    column=0,
-    sticky="w"
-)
+).grid(row=6, column=0, sticky="w")
 
 entry_dlugosc = tk.Entry(
     ramka_dodaj,
@@ -412,7 +392,7 @@ gui_data.entry_dlugosc = entry_dlugosc
 
 button_dodaj = tk.Button(
     ramka_dodaj,
-    text="➕  Dodaj festiwal",
+    text="➕ Dodaj festiwal",
     width=30,
     bg=green,
     fg="white",
@@ -523,7 +503,7 @@ gui_data.entry_dlugosc_update = entry_dlugosc_update
 
 button_update = tk.Button(
     ramka_update,
-    text="✏  Aktualizuj festiwal",
+    text="✏ Aktualizuj festiwal",
     width=30,
     bg=blue,
     fg="white",
@@ -538,6 +518,98 @@ button_update.grid(
     pady=8,
     ipady=2
 )
+
+
+# ==================================================
+# 🔵 DODAJ PRACOWNIKA
+# ==================================================
+
+ramka_dodaj_pracownika = tk.LabelFrame(
+    ramka_srodek,
+    text="Dodaj pracownika",
+    padx=12,
+    pady=12,
+    font=("Arial", 11, "bold")
+)
+
+ramka_dodaj_pracownika.pack(
+    pady=5
+)
+
+
+entry_imie_pracownika = tk.Entry(
+    ramka_dodaj_pracownika,
+    width=30
+)
+
+entry_imie_pracownika.grid(
+    row=0,
+    column=0,
+    padx=5,
+    pady=3
+)
+
+gui_data.entry_imie_pracownika = entry_imie_pracownika
+
+
+entry_rola_pracownika = tk.Entry(
+    ramka_dodaj_pracownika,
+    width=30
+)
+
+entry_rola_pracownika.grid(
+    row=1,
+    column=0,
+    padx=5,
+    pady=3
+)
+
+gui_data.entry_rola_pracownika = entry_rola_pracownika
+
+
+entry_szerokosc_pracownika = tk.Entry(
+    ramka_dodaj_pracownika,
+    width=30
+)
+
+entry_szerokosc_pracownika.grid(
+    row=2,
+    column=0,
+    padx=5,
+    pady=3
+)
+
+gui_data.entry_szerokosc_pracownika = entry_szerokosc_pracownika
+
+
+entry_dlugosc_pracownika = tk.Entry(
+    ramka_dodaj_pracownika,
+    width=30
+)
+
+entry_dlugosc_pracownika.grid(
+    row=3,
+    column=0,
+    padx=5,
+    pady=3
+)
+
+gui_data.entry_dlugosc_pracownika = entry_dlugosc_pracownika
+
+
+entry_location_id_pracownika = tk.Entry(
+    ramka_dodaj_pracownika,
+    width=30
+)
+
+entry_location_id_pracownika.grid(
+    row=4,
+    column=0,
+    padx=5,
+    pady=3
+)
+
+gui_data.entry_location_id_pracownika = entry_location_id_pracownika
 
 
 # ==================================================
@@ -581,12 +653,92 @@ gui_data.label_szczegoly = label_szczegoly
 
 
 # ==================================================
+# 🔵 MAPA
+# ==================================================
+
+ramka_mapa = tk.LabelFrame(
+    ramka_prawa,
+    text="Mapa festiwali",
+    padx=10,
+    pady=10,
+    font=("Arial", 11, "bold")
+)
+
+ramka_mapa.pack(
+    pady=10
+)
+
+
+canvas_mapa = tk.Canvas(
+    ramka_mapa,
+    width=350,
+    height=250,
+    bg="#d9d9d9"
+)
+
+canvas_mapa.pack()
+
+
+button_mapa_duza = tk.Button(
+    ramka_mapa,
+    text="📍 Otwórz interaktywną mapę",
+    width=35,
+    bg=green,
+    fg="white",
+    font=button_font,
+    relief="flat",
+    command=show_map
+)
+
+button_mapa_duza.pack(
+    pady=10,
+    ipady=2
+)
+
+
+# ==================================================
+# 🔵 STATUS SYSTEMU
+# ==================================================
+
+ramka_status = tk.LabelFrame(
+    ramka_prawa,
+    text="Status systemu",
+    padx=10,
+    pady=10,
+    font=("Arial", 11, "bold")
+)
+
+ramka_status.pack(
+    pady=10,
+    fill="x"
+)
+
+
+label_status = tk.Label(
+    ramka_status,
+    text="Ładowanie danych...",
+    justify="left",
+    font=("Arial", 10)
+)
+
+label_status.pack(
+    anchor="w"
+)
+
+gui_data.label_status = label_status
+
+
+# ==================================================
 # 🔵 START
 # ==================================================
 
 refresh_festival_list()
 
 refresh_location_list()
+
+refresh_employee_list()
+
+refresh_system_status()
 
 listbox_lista_festiwali.bind(
     "<<ListboxSelect>>",
