@@ -10,74 +10,94 @@ create_db()
 add_test_data()
 
 
-# 🔵 okno główne
+# 🔵 okno
 
 okno = tk.Tk()
 
-okno.geometry("900x600")
-
 okno.title("Film Festival System")
 
+okno.geometry("1000x650")
 
-# 🔵 ramka lista festiwali
+
+# 🔵 RAMKA LISTA FESTIWALI
 
 ramka_lista_festiwali = tk.Frame(okno)
 
-ramka_lista_festiwali.pack(side="left", padx=20, pady=20)
+ramka_lista_festiwali.pack(
+    side="left",
+    padx=20,
+    pady=20
+)
 
 
 label_lista_festiwali = tk.Label(
     ramka_lista_festiwali,
-    text="Lista festiwali"
+    text="Lista festiwali",
+    font=("Arial", 14)
 )
 
 label_lista_festiwali.pack()
 
 
-# 🔵 listbox
+# 🔵 LISTBOX
 
 listbox_lista_festiwali = tk.Listbox(
     ramka_lista_festiwali,
-    width=40,
+    width=45,
     height=20
 )
 
-listbox_lista_festiwali.pack()
+listbox_lista_festiwali.pack(pady=10)
 
 
-# 🔵 ramka formularz
+# 🔵 BUTTON ODŚWIEŻ
+
+button_odswiez = tk.Button(
+    ramka_lista_festiwali,
+    text="Odśwież listę"
+)
+
+button_odswiez.pack(pady=5)
+
+
+# 🔵 RAMKA FORMULARZ
 
 ramka_formularz = tk.Frame(okno)
 
-ramka_formularz.pack(side="left", padx=20, pady=20)
+ramka_formularz.pack(
+    side="left",
+    padx=20,
+    pady=20
+)
 
 
 label_formularz = tk.Label(
     ramka_formularz,
-    text="Dodaj festiwal"
+    text="Dodaj festiwal",
+    font=("Arial", 14)
 )
 
 label_formularz.pack()
 
 
-# 🔵 nazwa
+# 🔵 NAZWA
 
-label_nazwa_festiwalu = tk.Label(
+label_nazwa = tk.Label(
     ramka_formularz,
     text="Nazwa festiwalu"
 )
 
-label_nazwa_festiwalu.pack()
+label_nazwa.pack()
 
-entry_nazwa_festiwalu = tk.Entry(
+entry_nazwa = tk.Entry(
     ramka_formularz,
-    width=30
+    width=35
 )
 
-entry_nazwa_festiwalu.pack()
+entry_nazwa.pack(pady=5)
 
 
-# 🔵 miasto
+# 🔵 MIASTO
 
 label_miasto = tk.Label(
     ramka_formularz,
@@ -88,47 +108,47 @@ label_miasto.pack()
 
 entry_miasto = tk.Entry(
     ramka_formularz,
-    width=30
+    width=35
 )
 
-entry_miasto.pack()
+entry_miasto.pack(pady=5)
 
 
-# 🔵 szerokość
+# 🔵 SZEROKOŚĆ
 
 label_szerokosc = tk.Label(
     ramka_formularz,
-    text="Szerokość"
+    text="Szerokość geograficzna"
 )
 
 label_szerokosc.pack()
 
 entry_szerokosc = tk.Entry(
     ramka_formularz,
-    width=30
+    width=35
 )
 
-entry_szerokosc.pack()
+entry_szerokosc.pack(pady=5)
 
 
-# 🔵 długość
+# 🔵 DŁUGOŚĆ
 
 label_dlugosc = tk.Label(
     ramka_formularz,
-    text="Długość"
+    text="Długość geograficzna"
 )
 
 label_dlugosc.pack()
 
 entry_dlugosc = tk.Entry(
     ramka_formularz,
-    width=30
+    width=35
 )
 
-entry_dlugosc.pack()
+entry_dlugosc.pack(pady=5)
 
 
-# 🔵 odświeżanie listy
+# 🔵 ODŚWIEŻANIE LISTY
 
 def refresh_festival_list():
 
@@ -144,11 +164,11 @@ def refresh_festival_list():
         )
 
 
-# 🔵 dodawanie festiwalu
+# 🔵 DODAWANIE FESTIWALU
 
 def add_festival_gui():
 
-    name = entry_nazwa_festiwalu.get()
+    name = entry_nazwa.get()
 
     city = entry_miasto.get()
 
@@ -166,29 +186,114 @@ def add_festival_gui():
     refresh_festival_list()
 
 
-# 🔵 button dodaj festiwal
+# 🔵 USUWANIE FESTIWALU
 
-button_dodaj_festiwal = tk.Button(
+def delete_festival_gui():
+
+    selected = listbox_lista_festiwali.curselection()
+
+    if selected:
+
+        festival_text = listbox_lista_festiwali.get(selected)
+
+        festival_id = int(
+            festival_text.split("|")[0]
+        )
+
+        delete_festival(festival_id)
+
+        refresh_festival_list()
+
+
+# 🔵 EDYCJA FESTIWALU
+
+def update_festival_gui():
+
+    selected = listbox_lista_festiwali.curselection()
+
+    if selected:
+
+        festival_text = listbox_lista_festiwali.get(selected)
+
+        festival_id = int(
+            festival_text.split("|")[0]
+        )
+
+        name = entry_nazwa.get()
+
+        city = entry_miasto.get()
+
+        latitude = float(entry_szerokosc.get())
+
+        longitude = float(entry_dlugosc.get())
+
+        update_festival(
+            festival_id,
+            name,
+            city,
+            latitude,
+            longitude
+        )
+
+        refresh_festival_list()
+
+
+# 🔵 BUTTON DODAJ
+
+button_dodaj = tk.Button(
     ramka_formularz,
     text="Dodaj festiwal",
+    width=25,
     command=add_festival_gui
 )
 
-button_dodaj_festiwal.pack(pady=10)
+button_dodaj.pack(pady=10)
 
 
-# 🔵 button mapa
+# 🔵 BUTTON EDYTUJ
+
+button_edytuj = tk.Button(
+    ramka_formularz,
+    text="Edytuj festiwal",
+    width=25,
+    command=update_festival_gui
+)
+
+button_edytuj.pack(pady=5)
+
+
+# 🔵 BUTTON USUŃ
+
+button_usun = tk.Button(
+    ramka_formularz,
+    text="Usuń festiwal",
+    width=25,
+    command=delete_festival_gui
+)
+
+button_usun.pack(pady=5)
+
+
+# 🔵 BUTTON MAPA
 
 button_mapa = tk.Button(
     ramka_formularz,
     text="Otwórz mapę",
+    width=25,
     command=show_map
 )
 
-button_mapa.pack(pady=10)
+button_mapa.pack(pady=20)
 
 
-# 🔵 start
+# 🔵 BUTTON ODŚWIEŻ
+
+button_odswiez.config(
+    command=refresh_festival_list
+)
+
+
+# 🔵 START
 
 refresh_festival_list()
 
