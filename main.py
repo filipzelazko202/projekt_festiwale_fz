@@ -16,30 +16,33 @@ okno = tk.Tk()
 
 okno.title("Film Festival System")
 
-okno.geometry("1000x650")
+okno.geometry("1500x950")
 
 
-# 🔵 RAMKA LISTA FESTIWALI
+# ==================================================
+# 🔵 LEWA STRONA
+# ==================================================
 
-ramka_lista_festiwali = tk.Frame(okno)
+ramka_lewa = tk.Frame(okno)
 
-ramka_lista_festiwali.pack(
+ramka_lewa.pack(
     side="left",
-    padx=20,
-    pady=20
+    padx=15,
+    pady=15
 )
 
 
-label_lista_festiwali = tk.Label(
-    ramka_lista_festiwali,
+# 🔵 lista festiwali
+
+ramka_lista_festiwali = tk.LabelFrame(
+    ramka_lewa,
     text="Lista festiwali",
-    font=("Arial", 14)
+    padx=10,
+    pady=10
 )
 
-label_lista_festiwali.pack()
+ramka_lista_festiwali.pack()
 
-
-# 🔵 LISTBOX
 
 listbox_lista_festiwali = tk.Listbox(
     ramka_lista_festiwali,
@@ -47,112 +50,514 @@ listbox_lista_festiwali = tk.Listbox(
     height=20
 )
 
-listbox_lista_festiwali.pack(pady=10)
+listbox_lista_festiwali.pack()
 
 
-# 🔵 BUTTON ODŚWIEŻ
+# 🔵 buttony lista
+
+ramka_buttony_lista = tk.Frame(ramka_lewa)
+
+ramka_buttony_lista.pack(pady=10)
+
 
 button_odswiez = tk.Button(
-    ramka_lista_festiwali,
-    text="Odśwież listę"
+    ramka_buttony_lista,
+    text="Odśwież listę",
+    width=20
 )
 
-button_odswiez.pack(pady=5)
+button_odswiez.grid(
+    row=0,
+    column=0,
+    padx=5
+)
 
 
-# 🔵 RAMKA FORMULARZ
+button_wyczysc = tk.Button(
+    ramka_buttony_lista,
+    text="Wyczyść pola",
+    width=20
+)
 
-ramka_formularz = tk.Frame(okno)
+button_wyczysc.grid(
+    row=0,
+    column=1,
+    padx=5
+)
 
-ramka_formularz.pack(
+
+# 🔵 operacje festiwal
+
+ramka_operacje = tk.LabelFrame(
+    ramka_lewa,
+    text="Operacje na festiwalu",
+    padx=10,
+    pady=10
+)
+
+ramka_operacje.pack(
+    pady=10,
+    fill="x"
+)
+
+
+button_usun = tk.Button(
+    ramka_operacje,
+    text="Usuń festiwal",
+    width=30
+)
+
+button_usun.pack(pady=5)
+
+
+button_edytuj = tk.Button(
+    ramka_operacje,
+    text="Edytuj festiwal",
+    width=30
+)
+
+button_edytuj.pack(pady=5)
+
+
+button_szczegoly = tk.Button(
+    ramka_operacje,
+    text="Pokaż szczegóły",
+    width=30
+)
+
+button_szczegoly.pack(pady=5)
+
+
+# 🔵 mapa
+
+button_mapa = tk.Button(
+    ramka_lewa,
+    text="Otwórz mapę festiwali",
+    width=40,
+    height=2
+)
+
+button_mapa.pack(pady=15)
+
+
+# ==================================================
+# 🔵 ŚRODEK
+# ==================================================
+
+ramka_srodek = tk.Frame(okno)
+
+ramka_srodek.pack(
     side="left",
-    padx=20,
-    pady=20
+    padx=15,
+    pady=15
 )
 
 
-label_formularz = tk.Label(
-    ramka_formularz,
+# 🔵 dodawanie
+
+ramka_dodaj = tk.LabelFrame(
+    ramka_srodek,
     text="Dodaj festiwal",
-    font=("Arial", 14)
+    padx=15,
+    pady=15
 )
 
-label_formularz.pack()
+ramka_dodaj.pack()
 
 
-# 🔵 NAZWA
+# 🔵 nazwa
 
 label_nazwa = tk.Label(
-    ramka_formularz,
+    ramka_dodaj,
     text="Nazwa festiwalu"
 )
 
-label_nazwa.pack()
+label_nazwa.pack(anchor="w")
 
 entry_nazwa = tk.Entry(
-    ramka_formularz,
-    width=35
+    ramka_dodaj,
+    width=40
 )
 
 entry_nazwa.pack(pady=5)
 
 
-# 🔵 MIASTO
+# 🔵 miasto
 
 label_miasto = tk.Label(
-    ramka_formularz,
+    ramka_dodaj,
     text="Miasto"
 )
 
-label_miasto.pack()
+label_miasto.pack(anchor="w")
 
 entry_miasto = tk.Entry(
-    ramka_formularz,
-    width=35
+    ramka_dodaj,
+    width=40
 )
 
 entry_miasto.pack(pady=5)
 
 
-# 🔵 SZEROKOŚĆ
+# 🔵 szerokość
 
 label_szerokosc = tk.Label(
-    ramka_formularz,
+    ramka_dodaj,
     text="Szerokość geograficzna"
 )
 
-label_szerokosc.pack()
+label_szerokosc.pack(anchor="w")
 
 entry_szerokosc = tk.Entry(
-    ramka_formularz,
-    width=35
+    ramka_dodaj,
+    width=40
 )
 
 entry_szerokosc.pack(pady=5)
 
 
-# 🔵 DŁUGOŚĆ
+# 🔵 długość
 
 label_dlugosc = tk.Label(
-    ramka_formularz,
+    ramka_dodaj,
     text="Długość geograficzna"
 )
 
-label_dlugosc.pack()
+label_dlugosc.pack(anchor="w")
 
 entry_dlugosc = tk.Entry(
-    ramka_formularz,
-    width=35
+    ramka_dodaj,
+    width=40
 )
 
 entry_dlugosc.pack(pady=5)
 
 
+# 🔵 button dodaj
+
+button_dodaj = tk.Button(
+    ramka_dodaj,
+    text="Dodaj festiwal",
+    width=30
+)
+
+button_dodaj.pack(pady=15)
+
+
+# 🔵 aktualizacja
+
+ramka_update = tk.LabelFrame(
+    ramka_srodek,
+    text="Aktualizacja festiwalu",
+    padx=15,
+    pady=15
+)
+
+ramka_update.pack(
+    pady=15
+)
+
+
+entry_id_update = tk.Entry(
+    ramka_update,
+    width=40
+)
+
+entry_id_update.pack(pady=5)
+
+
+entry_nazwa_update = tk.Entry(
+    ramka_update,
+    width=40
+)
+
+entry_nazwa_update.pack(pady=5)
+
+
+entry_miasto_update = tk.Entry(
+    ramka_update,
+    width=40
+)
+
+entry_miasto_update.pack(pady=5)
+
+
+entry_szerokosc_update = tk.Entry(
+    ramka_update,
+    width=40
+)
+
+entry_szerokosc_update.pack(pady=5)
+
+
+entry_dlugosc_update = tk.Entry(
+    ramka_update,
+    width=40
+)
+
+entry_dlugosc_update.pack(pady=5)
+
+
+button_update = tk.Button(
+    ramka_update,
+    text="Zaktualizuj festiwal",
+    width=30
+)
+
+button_update.pack(pady=15)
+
+
+# ==================================================
+# 🔵 PRAWA STRONA
+# ==================================================
+
+ramka_prawa = tk.Frame(okno)
+
+ramka_prawa.pack(
+    side="left",
+    padx=15,
+    pady=15
+)
+
+
+# 🔵 szczegóły
+
+ramka_szczegoly = tk.LabelFrame(
+    ramka_prawa,
+    text="Szczegóły festiwalu",
+    padx=10,
+    pady=10
+)
+
+ramka_szczegoly.pack()
+
+
+label_szczegoly = tk.Label(
+    ramka_szczegoly,
+    text="Wybierz festiwal z listy",
+    justify="left"
+)
+
+label_szczegoly.pack(anchor="w")
+
+
+# 🔵 kina
+
+ramka_kina = tk.LabelFrame(
+    ramka_prawa,
+    text="Lokalizacje festiwalu",
+    padx=10,
+    pady=10
+)
+
+ramka_kina.pack(
+    pady=10
+)
+
+
+listbox_kina = tk.Listbox(
+    ramka_kina,
+    width=50,
+    height=8
+)
+
+listbox_kina.grid(
+    row=0,
+    column=0,
+    rowspan=3
+)
+
+
+button_dodaj_kino = tk.Button(
+    ramka_kina,
+    text="Dodaj lokalizację",
+    width=20
+)
+
+button_dodaj_kino.grid(
+    row=0,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_edytuj_kino = tk.Button(
+    ramka_kina,
+    text="Edytuj lokalizację",
+    width=20
+)
+
+button_edytuj_kino.grid(
+    row=1,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_usun_kino = tk.Button(
+    ramka_kina,
+    text="Usuń lokalizację",
+    width=20
+)
+
+button_usun_kino.grid(
+    row=2,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+# 🔵 pracownicy
+
+ramka_pracownicy = tk.LabelFrame(
+    ramka_prawa,
+    text="Pracownicy lokalizacji",
+    padx=10,
+    pady=10
+)
+
+ramka_pracownicy.pack(
+    pady=10
+)
+
+
+listbox_pracownicy = tk.Listbox(
+    ramka_pracownicy,
+    width=50,
+    height=8
+)
+
+listbox_pracownicy.grid(
+    row=0,
+    column=0,
+    rowspan=3
+)
+
+
+button_dodaj_pracownika = tk.Button(
+    ramka_pracownicy,
+    text="Dodaj pracownika",
+    width=20
+)
+
+button_dodaj_pracownika.grid(
+    row=0,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_edytuj_pracownika = tk.Button(
+    ramka_pracownicy,
+    text="Edytuj pracownika",
+    width=20
+)
+
+button_edytuj_pracownika.grid(
+    row=1,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_usun_pracownika = tk.Button(
+    ramka_pracownicy,
+    text="Usuń pracownika",
+    width=20
+)
+
+button_usun_pracownika.grid(
+    row=2,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+# 🔵 filmy
+
+ramka_filmy = tk.LabelFrame(
+    ramka_prawa,
+    text="Filmy festiwalu",
+    padx=10,
+    pady=10
+)
+
+ramka_filmy.pack(
+    pady=10
+)
+
+
+listbox_filmy = tk.Listbox(
+    ramka_filmy,
+    width=50,
+    height=8
+)
+
+listbox_filmy.grid(
+    row=0,
+    column=0,
+    rowspan=3
+)
+
+
+button_dodaj_film = tk.Button(
+    ramka_filmy,
+    text="Dodaj film",
+    width=20
+)
+
+button_dodaj_film.grid(
+    row=0,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_edytuj_film = tk.Button(
+    ramka_filmy,
+    text="Edytuj film",
+    width=20
+)
+
+button_edytuj_film.grid(
+    row=1,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+button_usun_film = tk.Button(
+    ramka_filmy,
+    text="Usuń film",
+    width=20
+)
+
+button_usun_film.grid(
+    row=2,
+    column=1,
+    padx=10,
+    pady=5
+)
+
+
+# ==================================================
 # 🔵 ODŚWIEŻANIE LISTY
+# ==================================================
 
 def refresh_festival_list():
 
-    listbox_lista_festiwali.delete(0, tk.END)
+    listbox_lista_festiwali.delete(
+        0,
+        tk.END
+    )
 
     festivals = read_festival_data()
 
@@ -164,136 +569,22 @@ def refresh_festival_list():
         )
 
 
-# 🔵 DODAWANIE FESTIWALU
-
-def add_festival_gui():
-
-    name = entry_nazwa.get()
-
-    city = entry_miasto.get()
-
-    latitude = float(entry_szerokosc.get())
-
-    longitude = float(entry_dlugosc.get())
-
-    add_festival(
-        name,
-        city,
-        latitude,
-        longitude
-    )
-
-    refresh_festival_list()
-
-
-# 🔵 USUWANIE FESTIWALU
-
-def delete_festival_gui():
-
-    selected = listbox_lista_festiwali.curselection()
-
-    if selected:
-
-        festival_text = listbox_lista_festiwali.get(selected)
-
-        festival_id = int(
-            festival_text.split("|")[0]
-        )
-
-        delete_festival(festival_id)
-
-        refresh_festival_list()
-
-
-# 🔵 EDYCJA FESTIWALU
-
-def update_festival_gui():
-
-    selected = listbox_lista_festiwali.curselection()
-
-    if selected:
-
-        festival_text = listbox_lista_festiwali.get(selected)
-
-        festival_id = int(
-            festival_text.split("|")[0]
-        )
-
-        name = entry_nazwa.get()
-
-        city = entry_miasto.get()
-
-        latitude = float(entry_szerokosc.get())
-
-        longitude = float(entry_dlugosc.get())
-
-        update_festival(
-            festival_id,
-            name,
-            city,
-            latitude,
-            longitude
-        )
-
-        refresh_festival_list()
-
-
-# 🔵 BUTTON DODAJ
-
-button_dodaj = tk.Button(
-    ramka_formularz,
-    text="Dodaj festiwal",
-    width=25,
-    command=add_festival_gui
-)
-
-button_dodaj.pack(pady=10)
-
-
-# 🔵 BUTTON EDYTUJ
-
-button_edytuj = tk.Button(
-    ramka_formularz,
-    text="Edytuj festiwal",
-    width=25,
-    command=update_festival_gui
-)
-
-button_edytuj.pack(pady=5)
-
-
-# 🔵 BUTTON USUŃ
-
-button_usun = tk.Button(
-    ramka_formularz,
-    text="Usuń festiwal",
-    width=25,
-    command=delete_festival_gui
-)
-
-button_usun.pack(pady=5)
-
-
-# 🔵 BUTTON MAPA
-
-button_mapa = tk.Button(
-    ramka_formularz,
-    text="Otwórz mapę",
-    width=25,
-    command=show_map
-)
-
-button_mapa.pack(pady=20)
-
-
-# 🔵 BUTTON ODŚWIEŻ
+# ==================================================
+# 🔵 BUTTONY
+# ==================================================
 
 button_odswiez.config(
     command=refresh_festival_list
 )
 
+button_mapa.config(
+    command=show_map
+)
 
+
+# ==================================================
 # 🔵 START
+# ==================================================
 
 refresh_festival_list()
 
