@@ -1,22 +1,28 @@
 import tkinter as tk
 
+from festival_lib import gui_data
+
 from festival_lib.controller import *
 
 
-# 🔵 baza danych
+# ==================================================
+# 🔵 BAZA
+# ==================================================
 
 create_db()
 
 add_test_data()
 
 
-# 🔵 okno
+# ==================================================
+# 🔵 OKNO
+# ==================================================
 
 okno = tk.Tk()
 
 okno.title("Film Festival System")
 
-okno.geometry("1500x950")
+okno.geometry("1400x850")
 
 
 # ==================================================
@@ -27,12 +33,14 @@ ramka_lewa = tk.Frame(okno)
 
 ramka_lewa.pack(
     side="left",
-    padx=15,
-    pady=15
+    padx=20,
+    pady=20
 )
 
 
-# 🔵 lista festiwali
+# ==================================================
+# 🔵 LISTA FESTIWALI
+# ==================================================
 
 ramka_lista_festiwali = tk.LabelFrame(
     ramka_lewa,
@@ -52,92 +60,47 @@ listbox_lista_festiwali = tk.Listbox(
 
 listbox_lista_festiwali.pack()
 
+gui_data.listbox_lista_festiwali = listbox_lista_festiwali
 
-# 🔵 buttony lista
 
-ramka_buttony_lista = tk.Frame(ramka_lewa)
-
-ramka_buttony_lista.pack(pady=10)
-
+# ==================================================
+# 🔵 BUTTONY
+# ==================================================
 
 button_odswiez = tk.Button(
-    ramka_buttony_lista,
-    text="Odśwież listę",
-    width=20
-)
-
-button_odswiez.grid(
-    row=0,
-    column=0,
-    padx=5
-)
-
-
-button_wyczysc = tk.Button(
-    ramka_buttony_lista,
-    text="Wyczyść pola",
-    width=20
-)
-
-button_wyczysc.grid(
-    row=0,
-    column=1,
-    padx=5
-)
-
-
-# 🔵 operacje festiwal
-
-ramka_operacje = tk.LabelFrame(
     ramka_lewa,
-    text="Operacje na festiwalu",
-    padx=10,
-    pady=10
+    text="Odśwież listę",
+    width=30,
+    command=refresh_festival_list
 )
 
-ramka_operacje.pack(
-    pady=10,
-    fill="x"
+button_odswiez.pack(
+    pady=5
 )
 
 
 button_usun = tk.Button(
-    ramka_operacje,
+    ramka_lewa,
     text="Usuń festiwal",
-    width=30
+    width=30,
+    command=delete_festival_gui
 )
 
-button_usun.pack(pady=5)
-
-
-button_edytuj = tk.Button(
-    ramka_operacje,
-    text="Edytuj festiwal",
-    width=30
+button_usun.pack(
+    pady=5
 )
 
-button_edytuj.pack(pady=5)
-
-
-button_szczegoly = tk.Button(
-    ramka_operacje,
-    text="Pokaż szczegóły",
-    width=30
-)
-
-button_szczegoly.pack(pady=5)
-
-
-# 🔵 mapa
 
 button_mapa = tk.Button(
     ramka_lewa,
-    text="Otwórz mapę festiwali",
-    width=40,
-    height=2
+    text="Otwórz mapę",
+    width=30,
+    command=show_map
 )
 
-button_mapa.pack(pady=15)
+button_mapa.pack(
+    pady=20
+)
 
 
 # ==================================================
@@ -148,12 +111,14 @@ ramka_srodek = tk.Frame(okno)
 
 ramka_srodek.pack(
     side="left",
-    padx=15,
-    pady=15
+    padx=20,
+    pady=20
 )
 
 
-# 🔵 dodawanie
+# ==================================================
+# 🔵 DODAWANIE FESTIWALU
+# ==================================================
 
 ramka_dodaj = tk.LabelFrame(
     ramka_srodek,
@@ -165,14 +130,13 @@ ramka_dodaj = tk.LabelFrame(
 ramka_dodaj.pack()
 
 
-# 🔵 nazwa
-
 label_nazwa = tk.Label(
     ramka_dodaj,
     text="Nazwa festiwalu"
 )
 
 label_nazwa.pack(anchor="w")
+
 
 entry_nazwa = tk.Entry(
     ramka_dodaj,
@@ -181,8 +145,8 @@ entry_nazwa = tk.Entry(
 
 entry_nazwa.pack(pady=5)
 
+gui_data.entry_nazwa = entry_nazwa
 
-# 🔵 miasto
 
 label_miasto = tk.Label(
     ramka_dodaj,
@@ -191,6 +155,7 @@ label_miasto = tk.Label(
 
 label_miasto.pack(anchor="w")
 
+
 entry_miasto = tk.Entry(
     ramka_dodaj,
     width=40
@@ -198,8 +163,8 @@ entry_miasto = tk.Entry(
 
 entry_miasto.pack(pady=5)
 
+gui_data.entry_miasto = entry_miasto
 
-# 🔵 szerokość
 
 label_szerokosc = tk.Label(
     ramka_dodaj,
@@ -208,6 +173,7 @@ label_szerokosc = tk.Label(
 
 label_szerokosc.pack(anchor="w")
 
+
 entry_szerokosc = tk.Entry(
     ramka_dodaj,
     width=40
@@ -215,8 +181,8 @@ entry_szerokosc = tk.Entry(
 
 entry_szerokosc.pack(pady=5)
 
+gui_data.entry_szerokosc = entry_szerokosc
 
-# 🔵 długość
 
 label_dlugosc = tk.Label(
     ramka_dodaj,
@@ -225,6 +191,7 @@ label_dlugosc = tk.Label(
 
 label_dlugosc.pack(anchor="w")
 
+
 entry_dlugosc = tk.Entry(
     ramka_dodaj,
     width=40
@@ -232,19 +199,24 @@ entry_dlugosc = tk.Entry(
 
 entry_dlugosc.pack(pady=5)
 
+gui_data.entry_dlugosc = entry_dlugosc
 
-# 🔵 button dodaj
 
 button_dodaj = tk.Button(
     ramka_dodaj,
     text="Dodaj festiwal",
-    width=30
+    width=30,
+    command=add_festival_gui
 )
 
-button_dodaj.pack(pady=15)
+button_dodaj.pack(
+    pady=15
+)
 
 
-# 🔵 aktualizacja
+# ==================================================
+# 🔵 AKTUALIZACJA
+# ==================================================
 
 ramka_update = tk.LabelFrame(
     ramka_srodek,
@@ -254,7 +226,7 @@ ramka_update = tk.LabelFrame(
 )
 
 ramka_update.pack(
-    pady=15
+    pady=20
 )
 
 
@@ -265,6 +237,8 @@ entry_id_update = tk.Entry(
 
 entry_id_update.pack(pady=5)
 
+gui_data.entry_id_update = entry_id_update
+
 
 entry_nazwa_update = tk.Entry(
     ramka_update,
@@ -272,6 +246,8 @@ entry_nazwa_update = tk.Entry(
 )
 
 entry_nazwa_update.pack(pady=5)
+
+gui_data.entry_nazwa_update = entry_nazwa_update
 
 
 entry_miasto_update = tk.Entry(
@@ -281,6 +257,8 @@ entry_miasto_update = tk.Entry(
 
 entry_miasto_update.pack(pady=5)
 
+gui_data.entry_miasto_update = entry_miasto_update
+
 
 entry_szerokosc_update = tk.Entry(
     ramka_update,
@@ -288,6 +266,8 @@ entry_szerokosc_update = tk.Entry(
 )
 
 entry_szerokosc_update.pack(pady=5)
+
+gui_data.entry_szerokosc_update = entry_szerokosc_update
 
 
 entry_dlugosc_update = tk.Entry(
@@ -297,14 +277,19 @@ entry_dlugosc_update = tk.Entry(
 
 entry_dlugosc_update.pack(pady=5)
 
+gui_data.entry_dlugosc_update = entry_dlugosc_update
+
 
 button_update = tk.Button(
     ramka_update,
-    text="Zaktualizuj festiwal",
-    width=30
+    text="Aktualizuj festiwal",
+    width=30,
+    command=update_festival_gui
 )
 
-button_update.pack(pady=15)
+button_update.pack(
+    pady=15
+)
 
 
 # ==================================================
@@ -315,12 +300,10 @@ ramka_prawa = tk.Frame(okno)
 
 ramka_prawa.pack(
     side="left",
-    padx=15,
-    pady=15
+    padx=20,
+    pady=20
 )
 
-
-# 🔵 szczegóły
 
 ramka_szczegoly = tk.LabelFrame(
     ramka_prawa,
@@ -338,248 +321,9 @@ label_szczegoly = tk.Label(
     justify="left"
 )
 
-label_szczegoly.pack(anchor="w")
+label_szczegoly.pack()
 
-
-# 🔵 kina
-
-ramka_kina = tk.LabelFrame(
-    ramka_prawa,
-    text="Lokalizacje festiwalu",
-    padx=10,
-    pady=10
-)
-
-ramka_kina.pack(
-    pady=10
-)
-
-
-listbox_kina = tk.Listbox(
-    ramka_kina,
-    width=50,
-    height=8
-)
-
-listbox_kina.grid(
-    row=0,
-    column=0,
-    rowspan=3
-)
-
-
-button_dodaj_kino = tk.Button(
-    ramka_kina,
-    text="Dodaj lokalizację",
-    width=20
-)
-
-button_dodaj_kino.grid(
-    row=0,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_edytuj_kino = tk.Button(
-    ramka_kina,
-    text="Edytuj lokalizację",
-    width=20
-)
-
-button_edytuj_kino.grid(
-    row=1,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_usun_kino = tk.Button(
-    ramka_kina,
-    text="Usuń lokalizację",
-    width=20
-)
-
-button_usun_kino.grid(
-    row=2,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-# 🔵 pracownicy
-
-ramka_pracownicy = tk.LabelFrame(
-    ramka_prawa,
-    text="Pracownicy lokalizacji",
-    padx=10,
-    pady=10
-)
-
-ramka_pracownicy.pack(
-    pady=10
-)
-
-
-listbox_pracownicy = tk.Listbox(
-    ramka_pracownicy,
-    width=50,
-    height=8
-)
-
-listbox_pracownicy.grid(
-    row=0,
-    column=0,
-    rowspan=3
-)
-
-
-button_dodaj_pracownika = tk.Button(
-    ramka_pracownicy,
-    text="Dodaj pracownika",
-    width=20
-)
-
-button_dodaj_pracownika.grid(
-    row=0,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_edytuj_pracownika = tk.Button(
-    ramka_pracownicy,
-    text="Edytuj pracownika",
-    width=20
-)
-
-button_edytuj_pracownika.grid(
-    row=1,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_usun_pracownika = tk.Button(
-    ramka_pracownicy,
-    text="Usuń pracownika",
-    width=20
-)
-
-button_usun_pracownika.grid(
-    row=2,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-# 🔵 filmy
-
-ramka_filmy = tk.LabelFrame(
-    ramka_prawa,
-    text="Filmy festiwalu",
-    padx=10,
-    pady=10
-)
-
-ramka_filmy.pack(
-    pady=10
-)
-
-
-listbox_filmy = tk.Listbox(
-    ramka_filmy,
-    width=50,
-    height=8
-)
-
-listbox_filmy.grid(
-    row=0,
-    column=0,
-    rowspan=3
-)
-
-
-button_dodaj_film = tk.Button(
-    ramka_filmy,
-    text="Dodaj film",
-    width=20
-)
-
-button_dodaj_film.grid(
-    row=0,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_edytuj_film = tk.Button(
-    ramka_filmy,
-    text="Edytuj film",
-    width=20
-)
-
-button_edytuj_film.grid(
-    row=1,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-button_usun_film = tk.Button(
-    ramka_filmy,
-    text="Usuń film",
-    width=20
-)
-
-button_usun_film.grid(
-    row=2,
-    column=1,
-    padx=10,
-    pady=5
-)
-
-
-# ==================================================
-# 🔵 ODŚWIEŻANIE LISTY
-# ==================================================
-
-def refresh_festival_list():
-
-    listbox_lista_festiwali.delete(
-        0,
-        tk.END
-    )
-
-    festivals = read_festival_data()
-
-    for festival in festivals:
-
-        listbox_lista_festiwali.insert(
-            tk.END,
-            f"{festival.id} | {festival.name} | {festival.city}"
-        )
-
-
-# ==================================================
-# 🔵 BUTTONY
-# ==================================================
-
-button_odswiez.config(
-    command=refresh_festival_list
-)
-
-button_mapa.config(
-    command=show_map
-)
+gui_data.label_szczegoly = label_szczegoly
 
 
 # ==================================================
@@ -587,5 +331,10 @@ button_mapa.config(
 # ==================================================
 
 refresh_festival_list()
+
+listbox_lista_festiwali.bind(
+    "<<ListboxSelect>>",
+    load_selected_festival
+)
 
 okno.mainloop()
