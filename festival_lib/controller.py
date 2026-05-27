@@ -1,6 +1,5 @@
 from festival_lib.db import Session, engine
-from festival_lib.model import Base, Festival
-
+from festival_lib.model import Base, Festival, Location
 from festival_lib import gui_data
 
 import tkinter as tk
@@ -297,6 +296,178 @@ def load_selected_festival(event):
                     f"Długość: {festival.longitude}"
                 )
 
+# ==================================================
+# 🔵 ODCZYT KIN
+# ==================================================
+
+def read_location_data():
+
+    session = Session()
+
+    locations = session.query(Location).all()
+
+    session.close()
+
+    return locations
+
+
+# ==================================================
+# 🔵 DODAWANIE KINA
+# ==================================================
+
+def add_location(
+        name,
+        city,
+        latitude,
+        longitude,
+        festival_id
+):
+
+    session = Session()
+
+    location = Location(
+        name=name,
+        city=city,
+        latitude=latitude,
+        longitude=longitude,
+        festival_id=festival_id
+    )
+
+    session.add(location)
+
+    session.commit()
+
+    session.close()
+
+
+# ==================================================
+# 🔵 USUWANIE KINA
+# ==================================================
+
+def delete_location(location_id):
+
+    session = Session()
+
+    location = session.query(Location).filter(
+        Location.id == location_id
+    ).first()
+
+    if location:
+
+        session.delete(location)
+
+        session.commit()
+
+    session.close()
+
+
+# ==================================================
+# 🔵 AKTUALIZACJA KINA
+# ==================================================
+
+def update_location(
+        location_id,
+        name,
+        city,
+        latitude,
+        longitude
+):
+
+    session = Session()
+
+    location = session.query(Location).filter(
+        Location.id == location_id
+    ).first()
+
+    if location:
+
+        location.name = name
+
+        location.city = city
+
+        location.latitude = latitude
+
+        location.longitude = longitude
+
+        session.commit()
+
+    session.close()
+
+
+# ==================================================
+# 🔵 ODŚWIEŻANIE LISTY KIN
+# ==================================================
+
+def refresh_location_list():
+
+    gui_data.listbox_lista_kin.delete(
+        0,
+        tk.END
+    )
+
+    locations = read_location_data()
+
+    for location in locations:
+
+        gui_data.listbox_lista_kin.insert(
+            tk.END,
+            f"{location.id} | {location.name} | {location.city}"
+        )
+
+
+# ==================================================
+# 🔵 DODAWANIE KINA GUI
+# ==================================================
+
+def add_location_gui():
+
+    name = gui_data.entry_nazwa_kina.get()
+
+    city = gui_data.entry_miasto_kina.get()
+
+    latitude = float(
+        gui_data.entry_szerokosc_kina.get()
+    )
+
+    longitude = float(
+        gui_data.entry_dlugosc_kina.get()
+    )
+
+    festival_id = int(
+        gui_data.entry_festival_id_kina.get()
+    )
+
+    add_location(
+        name,
+        city,
+        latitude,
+        longitude,
+        festival_id
+    )
+
+    refresh_location_list()
+
+
+# ==================================================
+# 🔵 USUWANIE KINA GUI
+# ==================================================
+
+def delete_location_gui():
+
+    selected = gui_data.listbox_lista_kin.curselection()
+
+    if selected:
+
+        location_text = gui_data.listbox_lista_kin.get(selected)
+
+        location_id = int(
+            location_text.split("|")[0]
+        )
+
+        delete_location(location_id)
+
+        refresh_location_list()
+
 
 # ==================================================
 # 🔵 MAPA
@@ -326,6 +497,8 @@ def show_map():
             icon=folium.Icon(color="red")
 
         ).add_to(mapa)
+
+
 
     mapa.save("mapa.html")
 
